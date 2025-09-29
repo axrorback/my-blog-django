@@ -2,3 +2,9 @@
 .env
 migrations/*
 db.sqlite3
+about/migrations/*
+blog/migrations/*
+contact/migrations/*
+faq/migrations/*
+projects/migrations/*
+.venv
