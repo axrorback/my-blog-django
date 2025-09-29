@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ - Tez-tez so‘raladigan savollar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+        }
+        input, textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .faq-item {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .faq-question {
+            background: #3498db;
+            color: #fff;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question:hover {
+            background: #2980b9;
+        }
+        .faq-answer {
+            display: none;
+            padding: 15px;
+            background: #ecf9f1;
+            border-left: 4px solid #2ecc71;
+        }
+        .faq-meta {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+        }
+        .answer-meta {
+            font-size: 13px;
+            color: #777;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>❓ Tez-tez so‘raladigan savollar</h1>
+
+    <!-- Savol yuborish formasi -->
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_name">Ismingiz</label>
+        {{ form.name }}
+
+        <label for="id_phone">Telefon raqamingiz</label>
+        {{ form.phone }}
+
+        <label for="id_question">Savolingiz</label>
+        {{ form.question }}
+
+        <button type="submit">📩 Savol yuborish</button>
+    </form>
+
+    <!-- Savollar ro‘yxati -->
+    {% for faq in faqs %}
+        <div class="faq-item">
+            <div class="faq-question">
+                {{ faq.question }}
+                <span>➕</span>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-meta">
+                    So‘ragan: <b>{{ faq.name }}</b> | 📞 {{ faq.masked_phone }} | {{ faq.created_at|date:"d-m-Y H:i" }}
+                </div>
+                {% if faq.answer %}
+                    <p><strong>Javob:</strong> {{ faq.answer }}</p>
+                    <div class="answer-meta">
+                        ✍️ Javob bergan: <b>{{ faq.answered_by }}</b> | ⏰ {{ faq.answered_at|date:"d-m-Y H:i" }}
+                    </div>
+                {% else %}
+                    <p><em>Admin tez orada javob beradi...</em></p>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>Hozircha savollar mavjud emas.</p>
+    {% endfor %}
+</div>
+
+<script>
+    // Accordion funksiyasi
+    document.querySelectorAll('.faq-question').forEach(item => {
+        item.addEventListener('click', () => {
+            let answer = item.nextElementSibling;
+            let icon = item.querySelector("span");
+
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                icon.textContent = "➕";
+            } else {
+                answer.style.display = "block";
+                icon.textContent = "➖";
+            }
+        });
+    });
+</script>
+</body>
+</html>
